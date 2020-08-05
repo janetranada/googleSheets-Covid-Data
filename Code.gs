@@ -57,7 +57,12 @@ function getCovidData_() {
 }
 
 function populateSheet() {  
-  SpreadsheetApp.getActiveSpreadsheet().getSheetByName("covid-data").clearContents();
+  const covidSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("covid-data");
+  
+  if (covidSheet) {
+    covidSheet.clearContents();
+  }
+  
   const response = getCovidData_();
   const responseObj = JSON.parse(response);
   const responseObjKeys = Object.keys(responseObj);
