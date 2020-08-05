@@ -9,7 +9,7 @@ function showSidebar() {
   const html = HtmlService.createTemplateFromFile("covidData")
     .evaluate()
     .setTitle("Covid Data Generator");
-  
+
   SpreadsheetApp.getUi().showSidebar(html);
 }
 
@@ -25,8 +25,8 @@ function getCacheName_() {
 }
 
 function getCountryData() {
-  return getCovidData_()
-};
+  return getCovidData_();
+}
 
 function getCovidData_() {
   const cacheName = getCacheName_();
@@ -47,29 +47,34 @@ function getCovidData_() {
   }
 
   parsedResp.Global.Country = "Global";
-  
+
   const responseCountryObj = {};
   responseCountryObj["Global"] = parsedResp.Global;
-  parsedResp.Countries.forEach(item => responseCountryObj[item.Country] = item);
-  const responseCountryObjString = JSON.stringify(responseCountryObj)
+  parsedResp.Countries.forEach(
+    (item) => (responseCountryObj[item.Country] = item)
+  );
+  const responseCountryObjString = JSON.stringify(responseCountryObj);
   cache.put(cacheName, responseCountryObjString, 21600); // six hours caching
   return responseCountryObjString;
 }
 
-function populateSheet() {  
-  const covidSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("covid-data");
-  
+function populateSheet() {
+  const activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  const covidSheet = activeSpreadsheet.getSheetByName("covid-data");
+  let spreadsheet;
+
   if (covidSheet) {
     covidSheet.clearContents();
+    spreadsheet = covidSheet;
+    spreadsheet.activate();
+  } else {
+    spreadsheet = activeSpreadsheet.insertSheet("covid-data");
   }
-  
+
   const response = getCovidData_();
   const responseObj = JSON.parse(response);
   const responseObjKeys = Object.keys(responseObj);
   const numRecords = responseObjKeys.length;
-  
-  let spreadsheet = SpreadsheetApp.getActiveSheet().setName("covid-data");
-  
 
   let headers = [
     "Location",
@@ -83,8 +88,8 @@ function populateSheet() {
 
   let numColumns = headers.length;
   let allData = [];
-  
-  responseObjKeys.forEach(key =>
+
+  responseObjKeys.forEach((key) =>
     allData.push([
       responseObj[key].Country,
       responseObj[key].NewConfirmed,
@@ -101,7 +106,7 @@ function populateSheet() {
     .setValues([headers])
     .setFontWeight("bold")
     .setHorizontalAlignment("center");
-  
+
   spreadsheet
     .getRange(2, 1, numRecords, numColumns)
     .setValues(allData)
