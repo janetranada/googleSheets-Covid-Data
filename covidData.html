@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top" />
+    <?!= include('Stylesheet'); ?>
+  </head>
+  <body>
+    <div class="title">Covid Data</div>
+    <button class="global">Get Global Data</button>
+
+    <hr />
+    <select id="countries">
+      <option value="default">-- Select country --</option>
+    </select>
+
+    <button id="btn-country" disabled>Get Country Data</button>
+
+    <div id="country-data">
+      <div id="selected-country"></div>
+      <table>
+        <tr class="header">
+          <th></th>
+          <th>New</th>
+          <th>Total</th>
+        </tr>
+        <tr class="confirmed">
+          <th>Confirmed</th>
+          <td class="new"></td>
+          <td class="total"></td>
+        </tr>
+        <tr class="deaths">
+          <th>Deaths</th>
+          <td class="new"></td>
+          <td class="total"></td>
+        </tr>
+        <tr class="recovered">
+          <th>Recovered</th>
+          <td class="new"></td>
+          <td class="total"></td>
+        </tr>
+      </table>
+    </div>
+
+    <?!= include('Javascript'); ?>
+  </body>
+</html>
